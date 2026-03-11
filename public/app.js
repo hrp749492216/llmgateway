@@ -559,7 +559,9 @@ async function sendRequest() {
           if (parsed.content) {
             fullText += parsed.content;
             output.textContent = fullText;
-            output.scrollTop = output.scrollHeight;
+            // Only auto-scroll if user is near the bottom (within 50px)
+            const nearBottom = output.scrollHeight - output.scrollTop - output.clientHeight < 50;
+            if (nearBottom) output.scrollTop = output.scrollHeight;
           }
           if (parsed.error) {
             fullText += '\n[Error: ' + parsed.error + ']';
