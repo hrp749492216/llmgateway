@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LLM Gateway</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚡</text></svg>">
+  <link rel="stylesheet" href="/style.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js" defer></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.8.0/mammoth.browser.min.js" defer></script>
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js" defer></script>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>LLM Gateway</h1>
+      <p class="subtitle">Send prompts to any LLM API with streaming</p>
+    </header>
+
+    <main>
+      <!-- API Configuration -->
+      <section class="card">
+        <h2>API Configuration</h2>
+        <div class="row">
+          <div class="field">
+            <label for="provider">Provider</label>
+            <select id="provider">
+              <option value="openai">OpenAI</option>
+              <option value="claude">Claude (Anthropic)</option>
+              <option value="gemini">Gemini (Google)</option>
+              <option value="openrouter">OpenRouter</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="model-select">Model</label>
+            <select id="model-select"></select>
+            <input type="text" id="model-custom" placeholder="e.g. anthropic/claude-3.5-sonnet" style="display:none">
+          </div>
+        </div>
+        <div class="field">
+          <label for="api-key">API Key <span class="hint-inline">(stored in session only)</span></label>
+          <div class="input-row">
+            <input type="password" id="api-key" placeholder="Enter your API key" autocomplete="off">
+            <button type="button" id="toggle-key" class="icon-btn" title="Show/Hide key">
+              <span id="eye-icon">Show</span>
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <!-- Prompt Templates -->
+      <section class="card">
+        <h2>Prompt Templates</h2>
+        <p class="hint">Upload .txt, .md, .pdf, or .docx files as system prompt templates</p>
+        <div class="upload-area" id="template-upload-area">
+          <input type="file" id="template-input" multiple accept=".txt,.md,.pdf,.docx,.doc">
+          <label for="template-input">Click or drag files here to upload templates</label>
+        </div>
+        <div id="template-list" class="file-list"></div>
+      </section>
+
+      <!-- User Prompt -->
+      <section class="card">
+        <h2>Your Prompt</h2>
+        <textarea id="user-prompt" rows="6" placeholder="Type your prompt here... (Ctrl+Enter to send)"></textarea>
+      </section>
+
+      <!-- File Attachments -->
+      <section class="card">
+        <h2>Attachments <span class="hint-inline">(context files &amp; images)</span></h2>
+        <p class="hint">Images sent to vision models. Documents extracted as text context.</p>
+        <div class="upload-area" id="attachment-upload-area">
+          <input type="file" id="attachment-input" multiple accept="image/*,.pdf,.txt,.md,.docx,.doc">
+          <label for="attachment-input">Click or drag files here to upload attachments</label>
+        </div>
+        <div id="attachment-list" class="file-list"></div>
+      </section>
+
+      <!-- Advanced Options -->
+      <section class="card">
+        <details id="advanced-details">
+          <summary><span class="summary-text">Advanced Options</span></summary>
+          <div class="options-grid">
+            <div class="field">
+              <label for="temperature">Temperature</label>
+              <input type="number" id="temperature" value="0.7" min="0" max="2" step="0.1">
+            </div>
+            <div class="field">
+              <label for="top-p">Top P</label>
+              <input type="number" id="top-p" value="1.0" min="0" max="1" step="0.05">
+            </div>
+            <div class="field">
+              <label for="max-tokens">Max Output Tokens</label>
+              <input type="number" id="max-tokens" value="4096" min="1" max="200000" step="1">
+            </div>
+            <div class="field">
+              <label for="output-format">Output Format</label>
+              <select id="output-format">
+                <option value="none">None (Default)</option>
+                <option value="json">JSON</option>
+                <option value="markdown">Markdown</option>
+                <option value="text">Plain Text</option>
+              </select>
+            </div>
+          </div>
+        </details>
+      </section>
+
+      <!-- Send / Stop -->
+      <button id="send-btn" class="primary-btn">Send Request</button>
+
+      <!-- Response -->
+      <section class="card" id="response-section" style="display:none">
+        <div class="response-header">
+          <h2>Response</h2>
+          <div class="response-actions">
+            <button id="copy-btn" class="small-btn">Copy</button>
+            <button id="clear-response-btn" class="small-btn">Clear</button>
+          </div>
+        </div>
+        <div id="response-output"></div>
+        <div id="response-meta"></div>
+      </section>
+
+      <!-- Session Controls -->
+      <div class="session-bar">
+        <button id="clear-session-btn" class="text-btn">Clear Session Data</button>
+      </div>
+    </main>
+  </div>
+
+  <script src="/app.js"></script>
+</body>
+</html>
