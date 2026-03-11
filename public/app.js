@@ -359,12 +359,13 @@ function initAdvancedOptions() {
 }
 
 function saveAdvancedOptions() {
+  const maxVal = $('max-tokens').value.trim();
   sessionStorage.setItem(
     'advancedOptions',
     JSON.stringify({
       temperature: parseFloat($('temperature').value),
       topP: parseFloat($('top-p').value),
-      maxTokens: parseInt($('max-tokens').value),
+      maxTokens: maxVal ? parseInt(maxVal) : null,
       outputFormat: $('output-format').value,
     })
   );
@@ -400,7 +401,7 @@ function restoreSession() {
       const opts = JSON.parse(o);
       if (opts.temperature != null) $('temperature').value = opts.temperature;
       if (opts.topP != null) $('top-p').value = opts.topP;
-      if (opts.maxTokens != null) $('max-tokens').value = opts.maxTokens;
+      $('max-tokens').value = opts.maxTokens != null ? opts.maxTokens : '';
       if (opts.outputFormat) $('output-format').value = opts.outputFormat;
     }
   } catch {}
@@ -418,7 +419,7 @@ function initClearSession() {
     $('user-prompt').value = '';
     $('temperature').value = '0.7';
     $('top-p').value = '1.0';
-    $('max-tokens').value = '4096';
+    $('max-tokens').value = '';
     $('output-format').value = 'none';
     $('response-section').style.display = 'none';
   });
@@ -482,7 +483,8 @@ async function sendRequest() {
   const messages = buildMessages(userPrompt);
   const temperature = parseFloat($('temperature').value) || 0.7;
   const topP = parseFloat($('top-p').value) || 1.0;
-  const maxTokens = parseInt($('max-tokens').value) || 4096;
+  const maxTokensVal = $('max-tokens').value.trim();
+  const maxTokens = maxTokensVal ? parseInt(maxTokensVal) : null;
   const outputFormat = $('output-format').value;
 
   // UI: show response area, set loading
@@ -513,7 +515,7 @@ async function sendRequest() {
         messages,
         temperature,
         topP,
-        maxTokens,
+        ...(maxTokens ? { maxTokens } : {}),
         outputFormat,
       }),
       signal: currentController.signal,

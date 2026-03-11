@@ -32,7 +32,7 @@ export default async function handler(req) {
       messages,
       temperature = 0.7,
       topP = 1.0,
-      maxTokens = 4096,
+      maxTokens,
       outputFormat = 'none',
     } = body;
 
@@ -164,8 +164,9 @@ async function proxyOpenAI(url, apiKey, model, messages, temperature, topP, maxT
     stream: true,
     temperature,
     top_p: topP,
-    max_tokens: maxTokens,
   };
+
+  if (maxTokens) body.max_tokens = maxTokens;
 
   if (outputFormat === 'json') {
     body.response_format = { type: 'json_object' };
@@ -238,7 +239,7 @@ async function proxyClaude(apiKey, model, messages, temperature, topP, maxTokens
   const body = {
     model,
     messages: claudeMessages,
-    max_tokens: maxTokens,
+    max_tokens: maxTokens || 128000,
     stream: true,
     temperature,
     top_p: topP,
@@ -320,14 +321,10 @@ async function proxyGemini(apiKey, model, messages, temperature, topP, maxTokens
     }
   }
 
-  const body = {
-    contents,
-    generationConfig: {
-      temperature,
-      topP,
-      maxOutputTokens: maxTokens,
-    },
-  };
+  const generationConfig = { temperature, topP };
+  if (maxTokens) generationConfig.maxOutputTokens = maxTokens;
+
+  const body = { contents, generationConfig };
 
   if (systemText) {
     body.systemInstruction = { parts: [{ text: systemText }] };
