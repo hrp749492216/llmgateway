@@ -1,9 +1,23 @@
 // --- Constants ---
 
 const MODELS = {
-  openai: ['gpt-4o', 'gpt-4o-mini', 'gpt-4-turbo', 'o1', 'o1-mini', 'o3-mini'],
-  claude: ['claude-sonnet-4-6', 'claude-opus-4-6', 'claude-haiku-4-5-20251001'],
-  gemini: ['gemini-2.0-flash', 'gemini-2.0-pro', 'gemini-1.5-pro', 'gemini-1.5-flash'],
+  openai: [
+    'gpt-5.4', 'gpt-5.4-pro', 'gpt-5', 'gpt-5-mini', 'gpt-5-nano',
+    'gpt-4.1', 'gpt-4.1-mini', 'gpt-4.1-nano',
+    'gpt-4o', 'gpt-4o-mini',
+    'o3', 'o3-mini', 'o3-pro', 'o4-mini',
+  ],
+  claude: [
+    'claude-opus-4-6', 'claude-sonnet-4-6',
+    'claude-opus-4-5-20251101', 'claude-sonnet-4-5-20250929',
+    'claude-haiku-4-5-20251001',
+  ],
+  gemini: [
+    'gemini-3.1-pro-preview', 'gemini-3.1-flash-lite-preview',
+    'gemini-3-flash-preview',
+    'gemini-2.5-pro', 'gemini-2.5-flash',
+    'gemini-2.0-flash',
+  ],
   openrouter: [], // free text input — user types any model ID
 };
 
@@ -66,16 +80,19 @@ function updateModels() {
   const provider = $('provider').value;
   const modelSelect = $('model-select');
   const modelCustom = $('model-custom');
+  const browseBtn = $('openrouter-browse');
   const models = MODELS[provider];
 
   if (models.length === 0) {
     modelSelect.style.display = 'none';
     modelCustom.style.display = 'block';
+    if (browseBtn) browseBtn.style.display = 'inline-block';
     const saved = localStorage.getItem('pref_model_' + provider);
     if (saved) modelCustom.value = saved;
   } else {
     modelSelect.style.display = 'block';
     modelCustom.style.display = 'none';
+    if (browseBtn) browseBtn.style.display = 'none';
     modelSelect.innerHTML = models
       .map((m) => `<option value="${m}">${m}</option>`)
       .join('');

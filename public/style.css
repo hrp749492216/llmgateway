@@ -458,6 +458,26 @@ details[open] .summary-text::before {
   80%, 100% { content: '...'; }
 }
 
+/* Browse Models Button (OpenRouter) */
+.browse-models-btn {
+  display: inline-block;
+  margin-top: 6px;
+  padding: 6px 14px;
+  background: var(--primary);
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 500;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.browse-models-btn:hover {
+  background: var(--primary-hover);
+}
+
 /* Session bar */
 .session-bar {
   text-align: center;
