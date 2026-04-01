@@ -239,7 +239,7 @@ async function proxyClaude(apiKey, model, messages, temperature, topP, maxTokens
   const body = {
     model,
     messages: claudeMessages,
-    max_tokens: maxTokens || 128000,
+    max_tokens: maxTokens != null ? maxTokens : 4096,
     stream: true,
     temperature,
     top_p: topP,
